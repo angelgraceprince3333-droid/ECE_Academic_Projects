@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Load-Shedding Time Manager
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<header>
+
+    <div>
+
+        <h1>
+            ⚡ Load-Shedding Time Manager
+        </h1>
+
+        <p>
+            Rural Power Outage Management System
+        </p>
+
+    </div>
+
+    <a class="admin-button"
+       href="{{ url_for('admin') }}">
+
+        Admin Panel
+
+    </a>
+
+</header>
+
+
+<main>
+
+
+    <!-- Search section -->
+
+    <section class="card">
+
+        <h2>
+            Check Power Schedule
+        </h2>
+
+        <form method="GET"
+              class="search-form">
+
+            <div>
+
+                <label>
+                    Region
+                </label>
+
+                <select name="region">
+
+                    {% for item in regions %}
+
+                    <option value="{{ item }}"
+                        {% if item == region %}
+                        selected
+                        {% endif %}>
+
+                        {{ item }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Date
+                </label>
+
+                <input type="date"
+                       name="date"
+                       value="{{ selected_date }}"
+                       required>
+
+            </div>
+
+
+            <button type="submit">
+
+                View Schedule
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+
+    <!-- Schedule -->
+
+    <section class="card">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    {{ region }}
+                </h2>
+
+                <p>
+                    Power outage schedule for
+                    <strong>
+                        {{ selected_date }}
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <button onclick="enableNotification()"
+                    class="notification-button">
+
+                🔔 Enable Alert
+
+            </button>
+
+        </div>
+
+
+        {% if schedules %}
+
+        <div class="schedule-container">
+
+            {% for schedule in schedules %}
+
+            <div class="outage-card">
+
+                <div class="outage-time">
+
+                    {{ schedule.start }}
+                    –
+                    {{ schedule.end }}
+
+                </div>
+
+                <h3>
+                    Power Unavailable
+                </h3>
+
+                <p>
+
+                    {{ schedule.reason }}
+
+                </p>
+
+                <span class="status">
+
+                    Scheduled Outage
+
+                </span>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="no-outage">
+
+            <div class="check">
+
+                ✓
+
+            </div>
+
+            <h3>
+                No Scheduled Outage
+            </h3>
+
+            <p>
+                No power outage is scheduled
+                for this region on this date.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- Features -->
+
+    <section class="card">
+
+        <h2>
+            System Features
+        </h2>
+
+        <div class="features">
+
+            <div class="feature">
+
+                📅
+
+                <h3>
+                    Daily Schedule
+                </h3>
+
+                <p>
+                    View planned power outages.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                📍
+
+                <h3>
+                    Multi-Region
+                </h3>
+
+                <p>
+                    Select different rural regions.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                🔔
+
+                <h3>
+                    Alerts
+                </h3>
+
+                <p>
+                    Browser notification support.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                💾
+
+                <h3>
+                    Local Storage
+                </h3>
+
+                <p>
+                    Schedules are stored locally.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+function enableNotification() {
+
+    if (!("Notification" in window)) {
+
+        alert(
+            "Notifications are not supported by this browser."
+        );
+
+        return;
+
+    }
+
+
+    Notification.requestPermission()
+        .then(function(permission) {
+
+            if (permission === "granted") {
+
+                new Notification(
+                    "Load-Shedding Manager",
+                    {
+                        body:
+                        "Load-shedding alerts are enabled."
+                    }
+                );
+
+            }
+
+            else {
+
+                alert(
+                    "Notification permission was not granted."
+                );
+
+            }
+
+        });
+
+}
+
+</script>
+
+</body>
+
+</html>

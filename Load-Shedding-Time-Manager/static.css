@@ -1,0 +1,374 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef3f7;
+    color: #1f2937;
+}
+
+
+/* Header */
+
+header {
+    background: #0f3d56;
+    color: white;
+    padding: 28px 7%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+}
+
+header h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+}
+
+header p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+
+.admin-button {
+    color: white;
+    text-decoration: none;
+
+    border: 1px solid rgba(255,255,255,0.5);
+
+    padding: 11px 18px;
+
+    border-radius: 8px;
+}
+
+
+/* Main */
+
+main {
+    max-width: 1100px;
+
+    margin: 30px auto;
+
+    padding: 0 20px;
+}
+
+
+/* Card */
+
+.card {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 25px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,0.07);
+}
+
+.card h2 {
+    margin-top: 0;
+}
+
+
+/* Forms */
+
+.search-form {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+    align-items: end;
+}
+
+.search-form > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input,
+select {
+    padding: 12px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+}
+
+
+button {
+    border: none;
+
+    background: #0f6b8f;
+
+    color: white;
+
+    padding: 12px 20px;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+
+/* Header inside card */
+
+.section-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+/* Schedule */
+
+.schedule-container {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(260px, 1fr));
+
+    gap: 18px;
+
+    margin-top: 20px;
+}
+
+
+.outage-card {
+    background: #fff7f7;
+
+    border-left: 6px solid #dc2626;
+
+    padding: 20px;
+
+    border-radius: 10px;
+}
+
+
+.outage-time {
+    font-size: 25px;
+
+    font-weight: bold;
+
+    color: #b91c1c;
+}
+
+.outage-card h3 {
+    margin-bottom: 5px;
+}
+
+.outage-card p {
+    margin-bottom: 15px;
+}
+
+
+.status {
+    display: inline-block;
+
+    background: #fee2e2;
+
+    color: #991b1b;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+/* No outage */
+
+.no-outage {
+    text-align: center;
+
+    background: #f0fdf4;
+
+    padding: 35px;
+
+    border-radius: 10px;
+}
+
+.check {
+    font-size: 45px;
+
+    color: #16a34a;
+}
+
+
+/* Features */
+
+.features {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(200px, 1fr));
+
+    gap: 15px;
+}
+
+.feature {
+    background: #f8fafc;
+
+    padding: 18px;
+
+    border-radius: 10px;
+}
+
+.feature h3 {
+    margin-bottom: 5px;
+}
+
+
+/* Admin */
+
+.admin-form {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 18px;
+}
+
+.admin-form > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.save-button {
+    grid-column: 1 / -1;
+}
+
+
+/* Messages */
+
+.success-message {
+    background: #dcfce7;
+
+    color: #166534;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+
+    font-weight: bold;
+}
+
+.error-message {
+    background: #fee2e2;
+
+    color: #991b1b;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+}
+
+
+/* Table */
+
+.region-title {
+    margin-top: 28px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    text-align: left;
+}
+
+th {
+    background: #f8fafc;
+}
+
+
+.delete-button {
+    background: #dc2626;
+
+    padding: 8px 12px;
+
+    font-size: 12px;
+}
+
+
+/* Responsive */
+
+@media (max-width: 700px) {
+
+    header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .admin-form {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width,
+    .save-button {
+        grid-column: auto;
+    }
+
+    .section-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
