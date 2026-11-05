@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Digital Speedometer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1> DIGITAL SPEEDOMETER </h1>
+
+        <p>Bike / Car Speed Monitoring System</p>
+
+    </header>
+
+
+    <!-- SPEED DISPLAY -->
+
+    <section class="speed-card">
+
+        <p class="display-title">
+            CURRENT SPEED
+        </p>
+
+        <div class="speed-display">
+
+            <span id="speedValue">0.00</span>
+
+        </div>
+
+        <div class="unit">
+            km/h
+        </div>
+
+        <div id="statusValue"
+             class="status stopped">
+
+            VEHICLE STOPPED
+
+        </div>
+
+    </section>
+
+
+    <!-- RPM INFORMATION -->
+
+    <section class="control-card">
+
+        <h2>Wheel Rotation Simulation</h2>
+
+        <p class="description">
+            Use the buttons below to simulate wheel RPM.
+        </p>
+
+        <div class="rpm-display">
+
+            <span id="rpmValue">0</span>
+
+            <span> RPM</span>
+
+        </div>
+
+
+        <!-- RPM BUTTONS -->
+
+        <div class="button-row">
+
+            <button id="decreaseBtn"
+                    class="control-button">
+
+                - 50 RPM
+
+            </button>
+
+
+            <button id="increaseBtn"
+                    class="control-button">
+
+                + 50 RPM
+
+            </button>
+
+        </div>
+
+
+        <!-- START STOP RESET -->
+
+        <div class="button-row">
+
+            <button id="startBtn"
+                    class="start-button">
+
+                START
+
+            </button>
+
+
+            <button id="stopBtn"
+                    class="stop-button">
+
+                STOP
+
+            </button>
+
+
+            <button id="resetBtn"
+                    class="reset-button">
+
+                RESET
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- VEHICLE INFORMATION -->
+
+    <section class="info-card">
+
+        <h2>Vehicle Information</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Wheel Diameter
+                </span>
+
+                <span class="info-value">
+                    <span id="diameterValue">
+                        {{ wheel_diameter }}
+                    </span>
+                    m
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Wheel RPM
+                </span>
+
+                <span class="info-value">
+                    <span id="rpmInfo">
+                        0
+                    </span>
+                    RPM
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Current Speed
+                </span>
+
+                <span class="info-value">
+                    <span id="speedInfo">
+                        0.00
+                    </span>
+                    km/h
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Trip Distance
+                </span>
+
+                <span class="info-value">
+                    <span id="tripDistance">
+                        0.000
+                    </span>
+                    km
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FORMULA -->
+
+    <section class="formula-card">
+
+        <h2>Speed Calculation</h2>
+
+        <p>
+            Speed =
+            RPM × π × Wheel Diameter × 60 / 1000
+        </p>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            Digital Speedometer Project
+        </p>
+
+        <p>
+            Python Flask Web Application
+        </p>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+let rpm = 0;
+
+let running = false;
+
+let tripDistance = 0;
+
+let lastTime = null;
+
+const wheelDiameter = 0.66;
+
+
+// ---------------------------------------------------------
+// GET ELEMENTS
+// ---------------------------------------------------------
+
+const speedValue =
+    document.getElementById("speedValue");
+
+const speedInfo =
+    document.getElementById("speedInfo");
+
+const rpmValue =
+    document.getElementById("rpmValue");
+
+const rpmInfo =
+    document.getElementById("rpmInfo");
+
+const statusValue =
+    document.getElementById("statusValue");
+
+const tripDistanceElement =
+    document.getElementById("tripDistance");
+
+
+// ---------------------------------------------------------
+// CALCULATE SPEED
+// ---------------------------------------------------------
+
+function calculateSpeed(currentRPM) {
+
+    const circumference =
+        Math.PI * wheelDiameter;
+
+    const metresPerMinute =
+        currentRPM * circumference;
+
+    const speed =
+        (metresPerMinute * 60) / 1000;
+
+    return speed;
+
+}
+
+
+// ---------------------------------------------------------
+// UPDATE DISPLAY
+// ---------------------------------------------------------
+
+function updateDisplay() {
+
+    const speed =
+        calculateSpeed(rpm);
+
+    speedValue.textContent =
+        speed.toFixed(2);
+
+    speedInfo.textContent =
+        speed.toFixed(2);
+
+    rpmValue.textContent =
+        rpm;
+
+    rpmInfo.textContent =
+        rpm;
+
+
+    if (running && rpm > 0) {
+
+        statusValue.textContent =
+            "VEHICLE MOVING";
+
+        statusValue.className =
+            "status moving";
+
+    } else {
+
+        statusValue.textContent =
+            "VEHICLE STOPPED";
+
+        statusValue.className =
+            "status stopped";
+
+    }
+
+}
+
+
+// ---------------------------------------------------------
+// UPDATE TRIP DISTANCE
+// ---------------------------------------------------------
+
+function updateTripDistance() {
+
+    if (!running || rpm <= 0) {
+
+        lastTime = null;
+
+        return;
+
+    }
+
+
+    const currentTime =
+        Date.now();
+
+
+    if (lastTime === null) {
+
+        lastTime = currentTime;
+
+        return;
+
+    }
+
+
+    const elapsedSeconds =
+        (currentTime - lastTime) / 1000;
+
+
+    const speed =
+        calculateSpeed(rpm);
+
+
+    const distance =
+        speed * elapsedSeconds / 3600;
+
+
+    tripDistance += distance;
+
+
+    tripDistanceElement.textContent =
+        tripDistance.toFixed(3);
+
+
+    lastTime = currentTime;
+
+}
+
+
+// ---------------------------------------------------------
+// INCREASE RPM
+// ---------------------------------------------------------
+
+document
+    .getElementById("increaseBtn")
+    .addEventListener("click", function() {
+
+        rpm += 50;
+
+        if (rpm > 300) {
+
+            rpm = 300;
+
+        }
+
+        updateDisplay();
+
+    });
+
+
+// ---------------------------------------------------------
+// DECREASE RPM
+// ---------------------------------------------------------
+
+document
+    .getElementById("decreaseBtn")
+    .addEventListener("click", function() {
+
+        rpm -= 50;
+
+        if (rpm < 0) {
+
+            rpm = 0;
+
+        }
+
+        updateDisplay();
+
+    });
+
+
+// ---------------------------------------------------------
+// START
+// ---------------------------------------------------------
+
+document
+    .getElementById("startBtn")
+    .addEventListener("click", function() {
+
+        running = true;
+
+        lastTime = Date.now();
+
+        updateDisplay();
+
+    });
+
+
+// ---------------------------------------------------------
+// STOP
+// ---------------------------------------------------------
+
+document
+    .getElementById("stopBtn")
+    .addEventListener("click", function() {
+
+        running = false;
+
+        lastTime = null;
+
+        rpm = 0;
+
+        updateDisplay();
+
+    });
+
+
+// ---------------------------------------------------------
+// RESET
+// ---------------------------------------------------------
+
+document
+    .getElementById("resetBtn")
+    .addEventListener("click", function() {
+
+        running = false;
+
+        rpm = 0;
+
+        tripDistance = 0;
+
+        lastTime = null;
+
+        tripDistanceElement.textContent =
+            "0.000";
+
+        updateDisplay();
+
+    });
+
+
+// ---------------------------------------------------------
+// CONTINUOUS DISTANCE UPDATE
+// ---------------------------------------------------------
+
+setInterval(function() {
+
+    updateTripDistance();
+
+}, 1000);
+
+
+// ---------------------------------------------------------
+// INITIAL DISPLAY
+// ---------------------------------------------------------
+
+updateDisplay();
+
+</script>
+
+</body>
+
+</html>
